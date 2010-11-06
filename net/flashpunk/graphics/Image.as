@@ -300,7 +300,7 @@
 		/** @private */ private var _alpha:Number = 1;
 		/** @private */ private var _color:uint = 0x00FFFFFF;
 		/** @private */ protected var _tint:ColorTransform;
-		/** @private */ private var _colorTransform:ColorTransform = new ColorTransform;
+		/** @private */ protected var _colorTransform:ColorTransform = new ColorTransform;
 		/** @private */ private var _matrix:Matrix = FP.matrix;
 		
 		// Flipped image information.

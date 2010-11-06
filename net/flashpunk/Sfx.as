@@ -22,11 +22,12 @@
 		 * @param	source		The embedded sound class to use.
 		 * @param	complete	Optional callback function for when the sound finishes playing.
 		 */
-		public function Sfx(source:Class, complete:Function = null) 
+		public function Sfx(source:Class, complete:Function = null, completeData:Object = null) 
 		{
 			_sound = _sounds[source];
 			if (!_sound) _sound = _sounds[source] = new source;
 			this.complete = complete;
+			this._completeData = completeData;
 		}
 		
 		/**
@@ -86,7 +87,7 @@
 			if (_looping) loop(_vol, _pan);
 			else stop();
 			_position = 0;
-			if (complete != null) complete();
+			if (complete != null) complete(_completeData);
 		}
 		
 		/**
@@ -137,6 +138,7 @@
 		/** @private */ private var _transform:SoundTransform = new SoundTransform;
 		/** @private */ private var _position:Number = 0;
 		/** @private */ private var _looping:Boolean;
+		/** @private */ private var _completeData:Object;
 		
 		// Stored Sound objects.
 		/** @private */ private static var _sounds:Dictionary = new Dictionary;
