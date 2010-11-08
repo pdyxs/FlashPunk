@@ -84,6 +84,11 @@ package net.flashpunk
 		}
 		
 		/**
+		 * Removes an entity from the current world
+		 */
+		public function removeEntity():void { FP.world.remove(this); }
+		
+		/**
 		 * Override this, called when the Entity is removed from a World.
 		 */
 		public function removed():void

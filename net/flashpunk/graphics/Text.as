@@ -35,24 +35,50 @@
 		public static var wordWrap:Boolean = false;
 		
 		/**
+		 * The resizable property to assign to new Text objects.
+		 */
+		public static var resizable: Boolean = true;
+		
+		/**
 		 * If the text field can automatically resize if its contents grow.
 		 */
-		public var resizable: Boolean = true;
+		public var resizable: Boolean;
 		
 		/**
 		 * Constructor.
 		 * @param	text		Text to display.
 		 * @param	x			X offset.
 		 * @param	y			Y offset.
-		 * @param	width		Image width (leave as 0 to size to the starting text string).
-		 * @param	height		Image height (leave as 0 to size to the starting text string).
+		 * @param	options		An object containing key/value pairs of the following optional parameters:
+		 * 						font		Font family.
+		 * 						size		Font size.
+		 * 						align		Alignment ("left", "center" or "right").
+		 * 						wordWrap	Automatic word wrapping.
+		 * 						resizable	If the text field can automatically resize if its contents grow.
+		 * 						width		Initial buffer width.
+		 * 						height		Initial buffer height.
+		 * 						color		Text color.
 		 */
-		public function Text(text:String, x:Number = 0, y:Number = 0, width:uint = 0, height:uint = 0)
+		public function Text(text:String, x:Number = 0, y:Number = 0, options:Object = null)
 		{
 			_font = Text.font;
 			_size = Text.size;
 			_align = Text.align;
 			_wordWrap = Text.wordWrap;
+			resizable = Text.resizable;
+			var width:uint = 0;
+			var height:uint = 0;
+			
+			if (options)
+			{
+				if (options.hasOwnProperty("font")) _font = options.font;
+				if (options.hasOwnProperty("size")) _size = options.size;
+				if (options.hasOwnProperty("align")) _align = options.align;
+				if (options.hasOwnProperty("wordWrap")) _wordWrap = options.wordWrap;
+				if (options.hasOwnProperty("resizable")) resizable = options.resizable;
+				if (options.hasOwnProperty("width")) width = options.width;
+				if (options.hasOwnProperty("height")) height = options.height;
+			}
 			
 			_field.embedFonts = true;
 			_field.wordWrap = _wordWrap;
@@ -63,11 +89,15 @@
 			_width = width || _field.textWidth + 4;
 			_height = height || _field.textHeight + 4;
 			_source = new BitmapData(_width, _height, true, 0);
-			_sourceRect = _source.rect;
 			super(_source);
 			updateBuffer();
 			this.x = x;
 			this.y = y;
+			
+			if (options)
+			{
+				if (options.hasOwnProperty("color")) color = options.color;
+			}
 		}
 		
 		/** @private Updates the drawing buffer. */
@@ -104,7 +134,14 @@
 			_field.height = _height;
 			
 			_source.draw(_field);
-			super.updateBuffer();
+			super.updateBuffer(clearBefore);
+		}
+		
+		/** @private Centers the Text's originX/Y to its center. */
+		override public function centerOrigin():void 
+		{
+			originX = _width / 2;
+			originY = _height / 2;
 		}
 		
 		/**
@@ -153,8 +190,7 @@
 		}
 		
 		/**
-		 * Alignment ("left", "center" or "right").
-		 * Only relevant if text spans multiple lines.
+		 * Automatic word wrapping.
 		 */
 		public function get wordWrap():Boolean { return _wordWrap; }
 		public function set wordWrap(value:Boolean):void
@@ -212,10 +248,10 @@
 		/** @private */ private var _wordWrap:Boolean;
 		
 		// Default font family.
-		// Use this option when compiling with Flex SDK 3 or lower
-		// [Embed(source = '04B_03__.TTF', fontFamily = 'default')]
 		// Use this option when compiling with Flex SDK 4
-		[Embed(source = '04B_03__.TTF', embedAsCFF="false", fontFamily = 'default')]
+		 [Embed(source = '04B_03__.TTF', embedAsCFF="false", fontFamily = 'default')]
+		// Use this option when compiling with Flex SDK <4
+//		[Embed(source = '04B_03__.TTF', fontFamily = 'default')]
 		/** @private */ private static var _FONT_DEFAULT:Class;
 	}
 }

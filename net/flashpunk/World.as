@@ -2,6 +2,7 @@
 {
 	import flash.geom.Point;
 	import flash.utils.Dictionary;
+	
 	import net.flashpunk.utils.Input;
 	
 	/**
@@ -607,6 +608,32 @@
 		}
 		
 		/**
+		 * Finds the Entity nearest to the rectangle.
+		 * @param	objects		Array/Vector of entities to look through.
+		 * @param	x			X position of the rectangle.
+		 * @param	y			Y position of the rectangle.
+		 * @param	width		Width of the rectangle.
+		 * @param	height		Height of the rectangle.
+		 * @return	The nearest Entity to the rectangle.
+		 */
+		public function nearestToRectFromList(objects:Object, x:Number, y:Number, width:Number, height:Number):Entity
+		{
+			var nearDist:Number = Number.MAX_VALUE,
+				near:Entity, dist:Number;
+			for each (var n:Entity in objects)
+			{
+				dist = squareRects(x, y, width, height, n.x - n.originX, n.y - n.originY, n.width, n.height);
+				if (dist < nearDist)
+				{
+					nearDist = dist;
+					near = n;
+				}
+				n = n._typeNext;
+			}
+			return near;
+		}
+		
+		/**
 		 * Finds the Entity nearest to another.
 		 * @param	type		The Entity type to check for.
 		 * @param	e			The Entity to find the nearest to.
@@ -622,6 +649,33 @@
 				x:Number = e.x - e.originX,
 				y:Number = e.y - e.originY;
 			while (n)
+			{
+				dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
+				if (dist < nearDist)
+				{
+					nearDist = dist;
+					near = n;
+				}
+				n = n._typeNext;
+			}
+			return near;
+		}
+		
+		/**
+		 * Finds the Entity nearest to another.
+		 * @param	objects		Array/Vector of entities to look through.
+		 * @param	e			The Entity to find the nearest to.
+		 * @param	useHitboxes	If the Entities' hitboxes should be used to determine the distance. If false, their x/y coordinates are used.
+		 * @return	The nearest Entity to e.
+		 */
+		public function nearestToEntityFromList(objects:Object, e:Entity, useHitboxes:Boolean = false):Entity
+		{
+			if (useHitboxes) return nearestToRectFromList(objects, e.x - e.originX, e.y - e.originY, e.width, e.height);
+			var nearDist:Number = Number.MAX_VALUE,
+				near:Entity, dist:Number,
+				x:Number = e.x - e.originX,
+				y:Number = e.y - e.originY;
+			for each (var n:Entity in objects)
 			{
 				dist = (x - n.x) * (x - n.x) + (y - n.y) * (y - n.y);
 				if (dist < nearDist)
@@ -832,6 +886,20 @@
 					into[n ++] = e;
 					e = e._typeNext;
 				}
+			}
+		}
+		
+		/**
+		 * Pushes all Entities in the World of the type into the Array or Vector.
+		 * @param	types		The types to check.
+		 * @param	into		The Array or Vector to populate.
+		 * @return	The same array, populated.
+		 */
+		public function getTypes(types:Object, into:Object):void
+		{
+			for each (var t:String in types)
+			{
+				getType(t, into);
 			}
 		}
 		

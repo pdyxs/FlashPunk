@@ -6,6 +6,7 @@
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	
 	import net.flashpunk.*;
 	
 	/**
@@ -53,7 +54,14 @@
 		 * If the image should be drawn transformed with pixel smoothing.
 		 * This will affect drawing performance, but look less pixelly.
 		 */
-		public var smooth:Boolean;
+		public function get smooth():Boolean
+		{
+			return _bitmap.smoothing;
+		}
+		public function set smooth(v:Boolean):void
+		{
+			_bitmap.smoothing = v;
+		}
 		
 		/**
 		 * Constructor.

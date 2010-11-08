@@ -56,6 +56,11 @@
 		public static var elapsed:Number;
 		
 		/**
+		 * Minimum scale of the game pieces
+		 */
+		public static var minScale:Number = 1;
+		
+		/**
 		 * Timescale applied to FP.elapsed (non-fixed framerate only).
 		 */
 		public static var rate:Number = 1;
